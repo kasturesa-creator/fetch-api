@@ -30,6 +30,7 @@ CORS is configured to allow requests from any origin, with any method and header
 | --- | --- | --- |
 | `GET` | `/api/v1/health` | A request with no input |
 | `GET` | `/api/v1/greetings?greeting=Welcome&sender=Ada` | Query parameters |
+| `GET` | `/api/v1/promise?seconds=2` | Async endpoint that waits before responding |
 | `POST` | `/api/v1/calculate` | JSON body and validation |
 | `GET` | `/api/v1/to-do` | Read all to-do items |
 | `POST` | `/api/v1/to-do/add` | Create an item with JSON |
@@ -46,6 +47,16 @@ const params = new URLSearchParams({ greeting: "Welcome", sender: "Ada" });
 const response = await fetch(`http://127.0.0.1:8000/api/v1/greetings?${params}`);
 const greeting = await response.json();
 console.log(greeting.message);
+```
+
+### Async response
+
+The browser's `fetch()` returns a promise. This endpoint also waits asynchronously on the server using `asyncio.sleep()` before it responds.
+
+```js
+const response = await fetch("http://127.0.0.1:8000/api/v1/promise?seconds=2");
+const result = await response.json();
+console.log(result.message); // "Promise resolved after 2.0 seconds."
 ```
 
 ### JSON request body

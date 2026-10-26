@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
@@ -72,6 +73,17 @@ async def health_check() -> dict[str, str]:
 	"""A GET request with no inputs; useful as a first fetch example."""
 	return {"status": "ok", "message": "The API is running."}
 
+@app.get(
+	"/api/v1/promise",
+	tags=["Async requests"],
+	summary="Wait asynchronously for a requested number of seconds",
+	description="Pass seconds as a query parameter, for example /api/v1/promise?seconds=2.",
+)
+async def promise(
+	seconds: float = Query(default=1, ge=0, le=10, description="How long to wait, from 0 to 10 seconds."),
+) -> dict[str, float | str]:
+	await asyncio.sleep(seconds)
+	return {"message": f"Promise resolved after {seconds} seconds.", "seconds": seconds}
 
 @app.get(
 	"/api/v1/greetings",
